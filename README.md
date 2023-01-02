@@ -12,7 +12,7 @@ Build on top of https://github.com/ARISE-Initiative/robosuite-benchmark.
 
 Clone the current repository:
 ```bash
-$ git clone https://github.com/Wenxuan-Zhou/dexterity.git
+$ git clone --recursive https://github.com/Wenxuan-Zhou/dexterity.git
 $ cd dexterity
 ```
 

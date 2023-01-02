@@ -1,0 +1,3 @@
+[submodule "robosuite"]
+	path = robosuite
+	url = https://github.com/Wenxuan-Zhou/robosuite.git
