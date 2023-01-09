@@ -1,6 +1,8 @@
-<div align="center">
+# Learning to Grasp the Ungraspable with Emergent Extrinsic Dexterity
 
-<font size=7>**Learning to Grasp the Ungraspable with Emergent Extrinsic Dexterity**</font>
+[//]: # (<div align="center">)
+
+[//]: # (<font size=7>**Learning to Grasp the Ungraspable with Emergent Extrinsic Dexterity**</font>)
 
 [Wenxuan Zhou](https://wenxuan-zhou.github.io/), [David Held](https://davheld.github.io/)
 
@@ -14,19 +16,18 @@ Conference on Robot Learning (CoRL) 2022 (Oral)
 
 ![intro.gif](imgs/intro.gif)
 
-</div>
+[//]: # (</div>)
 
 In this paper, we build a system based on reinforcement learning that shows 
 emergent extrinsic dexterity behavior with a simple gripper 
 for the "Occluded Grasping" task. This repository contains the code for the
-**simulation environment** of the Occluded Grasping task and **RL
-training and rollouts**. The code for the **real robot rollouts** can be found in 
+simulation environment of the Occluded Grasping task and RL
+training and rollouts. The code for the real robot can be found in 
 [a separate repository](https://github.com/Wenxuan-Zhou/frankapy_env).
 
 This repository is built on top of [robosuite-benchmark](https://github.com/ARISE-Initiative/robosuite-benchmark). The simulation environment is based on [robosuite](https://robosuite.ai/) and the RL training related code 
-is based on [rlkit](https://github.com/rail-berkeley/rlkit). As an overview, [ungraspable/robosuite_env](ungraspable%2Frobosuite_env)
-defines the simulation environment ([additional notes](ungraspable/robosuite_env/README.md)). 
-[ungraspable/rlkit_utils](ungraspable/rlkit_utils) defines helper functions to be used with rlkit.
+is based on [rlkit](https://github.com/rail-berkeley/rlkit). As an overview of this repository, [ungraspable/robosuite_env](ungraspable%2Frobosuite_env)
+defines the Occluded Grasping task. [ungraspable/rlkit_utils](ungraspable/rlkit_utils) defines helper functions to be used with rlkit.
 
 Please feel free to contact us if you have any questions on the code or anything else related to our paper!
 
