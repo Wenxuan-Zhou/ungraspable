@@ -1,6 +1,6 @@
 <div align="center">
 
-<font size=5>**Learning to Grasp the Ungraspable with Emergent Extrinsic Dexterity**</font>
+<font size=7>**Learning to Grasp the Ungraspable with Emergent Extrinsic Dexterity**</font>
 
 [Wenxuan Zhou](https://wenxuan-zhou.github.io/), [David Held](https://davheld.github.io/)
 
@@ -12,7 +12,7 @@ Conference on Robot Learning (CoRL) 2022 (Oral)
 | [Website](https://sites.google.com/view/grasp-ungraspable)
 | [Real robot code](https://github.com/Wenxuan-Zhou/frankapy_env)
 
-<img src="https://lh4.googleusercontent.com/IoEtyaHzTduq-iEl_b2Mh8jTPOO8uMM-rE10IkXGSlL9z7aX89uxTb67-xZM7j5J6r3Vo-XcLObmdtJdYI7YE8n82pxuyH9NPcXwMBSkfDs_226q53tAbIdupeg81nOLVv-vGMtufxXrl6yKZKUsFg=w1280" height="100%">
+<img src="./imgs/intro.gif" height="100%">
 
 </div>
 
