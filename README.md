@@ -12,7 +12,7 @@ Conference on Robot Learning (CoRL) 2022 (Oral)
 | [Website](https://sites.google.com/view/grasp-ungraspable)
 | [Real robot code](https://github.com/Wenxuan-Zhou/frankapy_env)
 
-<img src="./imgs/intro.gif" height="100%">
+![intro.gif](imgs/intro.gif)
 
 </div>
 
