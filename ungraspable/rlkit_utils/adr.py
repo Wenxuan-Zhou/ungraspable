@@ -1,7 +1,6 @@
+import numpy as np
 from abc import ABC
 from collections import deque
-
-import numpy as np
 from rlkit.core import logger
 from rlkit.samplers.data_collector.base import PathCollector
 
@@ -9,6 +8,10 @@ from ungraspable.rlkit_utils.rlkit_custom import get_custom_generic_path_informa
 
 
 class Param(object):
+    """
+    Defines an ADR parameter to be expanded
+    """
+
     def __init__(self, name, expl_env, eval_env, target_val, inc,
                  buffer_length=1, init_val=None, pair=None, priority=1, obs_key=None):
         # obs_key is used when creating the environment
@@ -97,6 +100,10 @@ class Param(object):
 
 
 class AdrPathCollector(PathCollector, ABC):
+    """
+    Defines the ADR procedure.
+    """
+
     def __init__(self, base_path_collector: PathCollector, expl_env, eval_env, parameters,
                  threshold_key=None, threshold_value_upper=None, threshold_value_lower=None, buffer_length=1,
                  adr_prob=0.5, enable_early_stopping=False):

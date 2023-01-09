@@ -3,13 +3,13 @@ Utility functions for parsing / processing command line arguments
 """
 
 import argparse
-from ungraspable.rlkit_utils.her_sac import AGENTS
 
+from ungraspable.rlkit_utils.her_sac import AGENTS
 
 # Define mapping from string True / False to bool True / False
 BOOL_MAP = {
-    "true" : True,
-    "false" : False
+    "true": True,
+    "false": False
 }
 
 # Define parser
@@ -26,9 +26,9 @@ parser.add_argument(
     '--ExpGroup', type=str, default='tmp', help='Experiment Group')
 
 
-def add_dexgrasp_args():
+def add_og_args():
     """
-    Adds args specific to DexGrasp Env
+    Adds args specific to OccludedGraspingSimEnv
     """
     parser.add_argument(
         '--adaptive',
@@ -39,19 +39,19 @@ def add_dexgrasp_args():
         '--goal_range',
         type=str,
         default="fixed",
-        help='Range of target grasp pose'
+        help='Mode of target grasp pose'
     )
     parser.add_argument(
         '--goal_range_min',
         type=float,
         default=1.5,
-        help='Range of target grasp pose'
+        help='Min range of target grasp pose'
     )
     parser.add_argument(
         '--goal_range_max',
         type=float,
         default=1.5,
-        help='Range of target grasp pose'
+        help='Max range of target grasp pose'
     )
     parser.add_argument(
         '--alpha1',
@@ -205,7 +205,7 @@ def add_agent_args():
         '--adr_mode',
         type=str,
         default=None,
-        help='Automatic Domain Randomization')
+        help='Automatic Domain Randomization config file name')
 
 
 def add_training_args():
@@ -334,10 +334,6 @@ def add_rollout_args():
         action='store_true',
         help='If true, store rollout paths')
     parser.add_argument(
-        '--save_csv',
-        action='store_true',
-        help='If true, store rollout results into csv')
-    parser.add_argument(
         '--grasp_and_lift',
         action='store_true',
         help='If true, grasp the object at the end of the episode for visualization')
@@ -362,4 +358,3 @@ def get_env_kwargs(args):
                                alpha1=args.alpha1, alpha2=args.alpha2, beta=args.beta))
 
     return env_kwargs
-

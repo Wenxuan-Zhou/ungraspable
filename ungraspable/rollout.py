@@ -1,17 +1,18 @@
-import os
-import torch
+import imageio
 import json
 import numpy as np
-from ungraspable.arguments import add_rollout_args, parser
-import robosuite as suite
+import os
+import pickle
+import torch
 from robosuite.wrappers import GymWrapper
-
 from signal import signal, SIGINT
 from sys import exit
-import imageio
-from ungraspable.rlkit_utils.rollout_utils import rollout_grasp_selection, simulate_policy, load_model, load_adr_progress, FakeVideoWriter
+
+import robosuite as suite
+from ungraspable.arguments import add_rollout_args, parser
+from ungraspable.rlkit_utils.rollout_utils import rollout_grasp_selection, simulate_policy, load_model, \
+    load_adr_progress, FakeVideoWriter
 from ungraspable.robosuite_env import get_controller_config
-import pickle
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = "True"
 
@@ -49,7 +50,7 @@ if __name__ == "__main__":
 
     # Grab / modify env args
     env_args = kwargs["eval_environment_kwargs"] if "eval_environment_kwargs" in kwargs.keys() \
-                else kwargs["environment_kwargs"]
+        else kwargs["environment_kwargs"]
 
     # Env Naming Backward compatibility
     if env_args["env_name"] == "DexEnv":
@@ -97,7 +98,7 @@ if __name__ == "__main__":
     key_list = [k for k in env_args.keys()]
     for k in key_list:
         if k in ['cube_size', 'cube_thickness', 'rho', 'rot']:
-            print("Removing "+k+" for backward compatibility:", env_args[k])
+            print("Removing " + k + " for backward compatibility:", env_args[k])
             env_args.pop(k)
     env_suite = suite.make(**env_args,
                            controller_configs=controller_config,
@@ -142,7 +143,7 @@ if __name__ == "__main__":
         )
 
         if args.save_paths:
-            pickle.dump(paths, open(os.path.basename(args.load_dir)+".pkl", "wb"))
+            pickle.dump(paths, open(os.path.basename(args.load_dir) + ".pkl", "wb"))
 
         for k in eval_dict.keys():
             if k == 'FinalReward Max' or k == 'FinalReward Mean' or ('final' in k and 'Mean' in k):

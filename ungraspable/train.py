@@ -1,12 +1,12 @@
-import os
-import time
 import json
-import torch
+import os
 import rlkit.torch.pytorch_util as ptu
+import time
+import torch
 from rlkit.launchers.launcher_util import setup_logger
 
-from ungraspable.rlkit_utils.her_sac import experiment
 from ungraspable.arguments import *
+from ungraspable.rlkit_utils.her_sac import experiment
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
@@ -91,7 +91,7 @@ def get_logger(variant, log_folder):
     folder_name = f'Exp{variant["ExpID"]:04d}_{variant["environment_kwargs"]["env_name"]}_' + \
                   f'{variant["ExpGroup"]}-{variant["seed"]}'
     log_dir = os.path.join(log_folder, time.strftime("%m-%d") + "-" + variant["ExpGroup"], folder_name)
-    save_freq = int(100/variant["algorithm_kwargs"]["num_train_loops_per_epoch"])
+    save_freq = int(100 / variant["algorithm_kwargs"]["num_train_loops_per_epoch"])
     setup_logger(variant=variant, log_dir=log_dir, snapshot_gap=save_freq, snapshot_mode='gap_and_last')
     ptu.set_gpu_mode(torch.cuda.is_available())
     print(f"CUDA is_available: ", torch.cuda.is_available())
@@ -102,8 +102,7 @@ if __name__ == '__main__':
     add_robosuite_args()
     add_agent_args()
     add_training_args()
-    add_dexgrasp_args()
+    add_og_args()
     exp_variant, folder = args_to_variant()
     get_logger(exp_variant, folder)
     experiment(exp_variant, agent=exp_variant["algorithm"])
-

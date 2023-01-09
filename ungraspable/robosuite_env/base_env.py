@@ -1,23 +1,28 @@
-from collections import OrderedDict
 import numpy as np
-from robosuite.utils.mjcf_utils import CustomMaterial
+from collections import OrderedDict
 from robosuite.environments.manipulation.manipulation_env import ManipulationEnv
 from robosuite.models.objects import BoxObject
 from robosuite.models.tasks import ManipulationTask
-from robosuite.utils.placement_samplers import UniformRandomSampler
+from robosuite.utils.mjcf_utils import CustomMaterial
 from robosuite.utils.observables import Observable, sensor
+from robosuite.utils.placement_samplers import UniformRandomSampler
+
 from ungraspable.robosuite_env.bin_arena import BinArena
 from ungraspable.robosuite_env.single_arm import SingleArm
 
 
 class BaseEnv(ManipulationEnv):
     """
+    Modified based on robosuite.environments.manipulation.lift
+
     This class corresponds to the lifting task for a single robot arm.
 
     Args:
         robots (str or list of str): Specification for specific robot arm(s) to be instantiated within this env
             (e.g: "Sawyer" would generate one arm; ["Panda", "Panda", "Sawyer"] would generate three robot arms)
             Note: Must be a single single-arm robot!
+
+        initial_qpos (array): Robot initial joint configuration
 
         env_configuration (str): Specifies how to position the robots within the environment (default is "default").
             For most single arm environments, this argument has no impact on the robot setup.
@@ -33,7 +38,7 @@ class BaseEnv(ManipulationEnv):
             overrides the default gripper. Should either be single str if same gripper type is to be used for all
             robots or else it should be a list of the same length as "robots" param
 
-        initialization_noise (dict or list of dict): Dict containing the  initialization noise parameters.
+        initialization_noise (dict or list of dict): Dict containing the initialization noise parameters.
             The expected keys and corresponding value types are specified below:
 
             :`'magnitude'`: The scale factor of uni-variate random noise applied to each of a robot's given initial
@@ -128,6 +133,10 @@ class BaseEnv(ManipulationEnv):
             If not None, multiple types of segmentations can be specified. A [list of str / str or None] specifies
             [multiple / a single] segmentation(s) to use for all cameras. A list of list of str specifies per-camera
             segmentation setting(s) to use.
+
+        adaptive (bool): If true, include ADR parameters in the observation based on additional_obs_keys.
+
+        additional_obs_keys (list): Additional parameters to be included in the observation.
 
     Raises:
         AssertionError: [Invalid number of robots specified]
@@ -297,19 +306,21 @@ class BaseEnv(ManipulationEnv):
         self.object_size_x_val = np.random.uniform(self.object_size_x_min, self.object_size_x_max)
         self.object_size_y_val = np.random.uniform(self.object_size_y_min, self.object_size_y_max)
         self.object_size_z_val = np.random.uniform(self.object_size_z_min, self.object_size_z_max)
-        self.object_density_val = np.random.randint(self.object_density_min, self.object_density_max+1)
+        self.object_density_val = np.random.randint(self.object_density_min, self.object_density_max + 1)
 
         self.cube = BoxObject(
             name="cube",
-            size_min=[self.object_size_x_val/2, self.object_size_y_val/2, self.object_size_z_val/2],  # [0.015, 0.015, 0.015],
-            size_max=[self.object_size_x_val/2, self.object_size_y_val/2, self.object_size_z_val/2],  # [0.018, 0.018, 0.018])
+            size_min=[self.object_size_x_val / 2, self.object_size_y_val / 2, self.object_size_z_val / 2],
+            # [0.015, 0.015, 0.015],
+            size_max=[self.object_size_x_val / 2, self.object_size_y_val / 2, self.object_size_z_val / 2],
+            # [0.018, 0.018, 0.018])
             rgba=[1, 0, 0, 1],
             material=redwood,
             density=self.object_density_val,
         )
 
         # # Create placement initializer
-        xpos_max = self.table_full_size[0]/2 - self.cube.size[0]
+        xpos_max = self.table_full_size[0] / 2 - self.cube.size[0]
         self.placement_initializer = UniformRandomSampler(
             name="ObjectSampler",
             mujoco_objects=self.cube,
@@ -325,7 +336,7 @@ class BaseEnv(ManipulationEnv):
         # task includes arena, robot, and objects of interest
         self.model = ManipulationTask(
             mujoco_arena=mujoco_arena,
-            mujoco_robots=[robot.robot_model for robot in self.robots], 
+            mujoco_robots=[robot.robot_model for robot in self.robots],
             mujoco_objects=self.cube,
         )
 

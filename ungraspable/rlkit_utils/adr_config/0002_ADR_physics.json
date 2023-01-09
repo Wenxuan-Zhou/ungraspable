@@ -1,0 +1,90 @@
+{
+  "threshold_key": "env_infos_final/success Mean",
+  "threshold_value_upper": 0.8,
+  "threshold_value_lower": 0,
+  "adr_prob": 0.5,
+  "buffer_length": 5,
+  "parameters":
+  {
+    "controller_max_translation_min": {
+      "target_val": 0.02,
+      "inc": -0.005,
+      "pair": "controller_max_translation_max"
+    },
+    "controller_max_rotation_min": {
+      "target_val": 0.1,
+      "inc": -0.05,
+      "pair": "controller_max_rotation_max"
+    },
+    "object_to_wall_dist_max": {
+      "target_val": 0.02,
+      "inc": 0.01,
+      "pair": "object_to_wall_dist_min"
+    },
+    "table_offset_x_min": {
+      "target_val": 0.48,
+      "inc": -0.01,
+      "pair": "table_offset_x_max"
+    },
+    "table_offset_x_max": {
+      "target_val": 0.52,
+      "inc": 0.01,
+      "pair": "table_offset_x_min"
+    },
+    "table_offset_z_min": {
+      "target_val": 0.055,
+      "inc": -0.01,
+      "pair": "table_offset_z_max"
+    },
+    "table_offset_z_max": {
+      "target_val": 0.075,
+      "inc": 0.01,
+      "pair": "table_offset_z_min"
+    },
+    "object_size_x_min": {
+      "target_val": 0.14,
+      "inc": -0.01,
+      "pair": "object_size_x_max"
+    },
+    "object_size_x_max": {
+      "target_val": 0.16,
+      "inc": 0.01,
+      "pair": "object_size_x_min"
+    },
+    "object_size_z_min": {
+      "target_val": 0.04,
+      "inc": -0.01,
+      "pair": "object_size_z_max"
+    },
+    "object_size_z_max": {
+      "target_val": 0.06,
+      "inc": 0.01,
+      "pair": "object_size_z_min"
+    },
+    "table_friction_min": {
+      "target_val": 0.1,
+      "inc": -0.1,
+      "pair": "table_friction_max"
+    },
+    "table_friction_max": {
+      "target_val": 0.5,
+      "inc": 0.1,
+      "pair": "table_friction_min"
+    },
+    "gripper_friction_min": {
+      "target_val": 2,
+      "inc": -1,
+      "pair": "gripper_friction_max"
+    },
+    "object_density_min": {
+      "target_val": 43,
+      "inc": -43,
+      "pair": "object_density_max"
+    },
+    "object_density_max": {
+      "target_val": 172,
+      "inc": 86,
+      "pair": "object_density_min"
+    }
+  }
+}

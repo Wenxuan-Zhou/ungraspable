@@ -2,6 +2,7 @@ from robosuite.controllers.base_controller import Controller
 from robosuite.utils.control_utils import *
 import robosuite.utils.transform_utils as T
 import numpy as np
+from ungraspable.robosuite_env.utils import angle_diff_vec
 
 # Set VERBOSE to True to debug
 np.set_printoptions(precision=3)
@@ -10,16 +11,6 @@ VERBOSE = False
 # Supported impedance modes
 IMPEDANCE_MODES = {"fixed", "variable", "variable_kp"}
 
-
-def angle_diff(vec1, vec2, degree=True):
-    vec1 = vec1 / np.linalg.norm(vec1)
-    vec2 = vec2 / np.linalg.norm(vec2)
-    prod = np.dot(vec1, vec2)
-    prod = np.clip(prod, -1, 1)
-    angle = np.arccos(prod)
-    if degree:
-        angle = angle / np.pi * 180
-    return angle
 
 
 class OSC(Controller):
@@ -277,6 +268,9 @@ class OSC(Controller):
             self.relative_ori = np.zeros(3)  # relative orientation always starts at 0
 
     def _get_desired_pose(self, action):
+        """
+        Process the action space to get the desired pose
+        """
         # Get base pose
         if self.controller_mode == 'accumulate':
             base_pose = T.make_pose(self.goal_pos, self.goal_ori).copy()
@@ -305,7 +299,7 @@ class OSC(Controller):
             z_axis = orn[:, 2]  # global frame
             initial_z_axis = self.initial_ee_ori_mat[:, 2]  # global frame
             # TODO: remove angle_diff
-            rotation_angle = angle_diff(z_axis, initial_z_axis)/180*np.pi
+            rotation_angle = angle_diff_vec(z_axis, initial_z_axis)/180*np.pi
             rotation_angle *= np.sign(np.cross(initial_z_axis, z_axis)[1])
             # rotation axis given by positive y-direction in the global frame
             rotation_angle += action[4] * self.max_rotation
@@ -457,6 +451,10 @@ class OSC(Controller):
         return self.controller_type
 
     def orientation_feasible(self, orn):
+        """
+        Check if the orientation is within the limit.
+        This is to avoid the robot being too much twisted.
+        """
         quat = T.convert_quat(T.mat2quat(orn.dot(self.initial_ee_ori_mat)), to='wxyz')
         angle = np.arccos(min(abs(quat[0]), 1))/np.pi*180*2
         assert self.orientation_limits.shape == (), 'Only taking a scalar limit for now.'
@@ -468,6 +466,9 @@ class OSC(Controller):
         return True
 
     def joint_limit_feasible(self, desired_pos, desired_ori):
+        """
+        Check if the desired pose will reach joint limit based on the jacobian.
+        """
         # joint limit from frankapy
         JOINT_LIMITS_MIN = np.array([-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973]) + 0.1
         JOINT_LIMITS_MAX = np.array([2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973]) - 0.1

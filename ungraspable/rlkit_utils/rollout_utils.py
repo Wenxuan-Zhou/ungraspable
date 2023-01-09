@@ -1,20 +1,23 @@
+import cv2
 import datetime
-
+import imageio
+import json
 import numpy as np
 import os
-import imageio
-from ungraspable.rlkit_utils.rlkit_custom import get_custom_generic_path_information
-from rlkit.torch.pytorch_util import set_gpu_mode
+import pandas as pd
+import pickle
 import torch
 from rlkit.core import logger
+from rlkit.torch.pytorch_util import set_gpu_mode
 from rlkit.torch.sac.policies import MakeDeterministic
-import cv2
-import pickle
-import json
-import pandas as pd
+
+from ungraspable.rlkit_utils.rlkit_custom import get_custom_generic_path_information
 
 
 def rollout_grasp_selection(env, qf, policy, args, env_args, video_writer):
+    """
+    Rollout with grasp selection based on the Q-function.
+    """
     if hasattr(env, "set_models"):
         env.set_models(qf, policy)
 
@@ -58,6 +61,9 @@ def rollout_grasp_selection(env, qf, policy, args, env_args, video_writer):
 
 
 def load_adr_progress(env, data):
+    """
+    Load the training progress of ADR.
+    """
     adr_key = None
     for k in data.keys():
         if 'adr_params' in k:
@@ -82,7 +88,10 @@ def load_model(model_path,
                return_qf=False,
                printout=False,
                use_gpu=False):
-    # Load trained model and corresponding policy
+    """
+    Load trained model and corresponding policy.
+    """
+
     map_location = torch.device("cuda") if use_gpu else torch.device("cpu")
     data = torch.load(model_path, map_location=map_location)
     policy = data['evaluation/policy']
@@ -113,7 +122,6 @@ def simulate_policy(
         printout=False,
         return_paths=False,
         grasp_and_lift=False):
-
     if printout:
         print("Simulating policy...")
 
@@ -263,8 +271,11 @@ def rollout(
     )
 
 
-# Write images into a folder instead of a video
 class FakeVideoWriter(object):
+    """
+    Write images into a folder instead of a video
+    """
+
     def __init__(self, dirname):
         if not os.path.exists(dirname):
             os.mkdir(dirname)

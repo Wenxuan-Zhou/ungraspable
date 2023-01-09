@@ -1,7 +1,8 @@
 import os
-from ungraspable.robosuite_env.og_env import OccludedGraspingSimEnv
-from robosuite.environments.base import register_env
 from robosuite.controllers import ALL_CONTROLLERS, load_controller_config
+from robosuite.environments.base import register_env
+
+from ungraspable.robosuite_env.og_env import OccludedGraspingSimEnv
 
 register_env(OccludedGraspingSimEnv)
 

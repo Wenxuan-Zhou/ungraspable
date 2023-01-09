@@ -1,39 +1,29 @@
-# DexEnv
+# robosuite_env
 
-### TODO
-- Remove all dependencies of gym.envs.robotics.rotations
-- Remove all usages of euler angles because the
-
----
-### dex_env.py
-- Defines the task of dexterous grasping
-- Observations:
-  - Object  pos,quat in global frame
-  - Grip_site pos, quat in global frame
-  - Grip_site pos, quat in object frame (as achieved goal)
-  - Desired goal
-- Reward definition
-
-### grasp_samplers.py
-- Defines how the target grasp is sampled
+### og_env.py
+- Defines the Occluded Grasping Task including obs, reward and goals.
 
 ### base_env.py
-- Defines the object model
-- Loads the arena and the robot
-- Includes all the object related obs
+- Configures the simulation environment of the Occluded Grasping Task
+which loads the object model, the bin and the robot
+- Modified from robosuite.manipulation.lift
 
 ### single_arm.py
 - Loads the robot model and the controller
 - Includes all the robot related obs
-- Be careful about end-effector. It is defined to be robot0_right_gripper 
-which is not consistent with the actual orientation of the gripper base.
+- Modified from robosuite.robots.single_arm
 
-### osc_xzplane.py
+### osc.py
 - Defines the controller of the robot
 - 'eef' means finger tip (defined in single_arm.py)
 
 ### bin_arena.py
 - Defines the robot workspace that contains one bin
 
-# Rotations
-- Following Mujoco quaternion convention: wxyz (instead of robosuite conversion xyzw).
+### gym_rotations.py
+- From gym.envs.robotics.rotations
+- Copied the file over here because the newer gym version does not have gym.envs.robotics anymore.
+- Note that Mujoco quaternion convention is wxyz while robosuite conversion is xyzw.
+
+### utils.py
+- Miscellaneous functions

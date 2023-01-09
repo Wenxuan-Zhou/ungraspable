@@ -1,0 +1,20 @@
+{
+  "threshold_key": "env_infos_final/success Mean",
+  "threshold_value_upper": 0.8,
+  "threshold_value_lower": 0,
+  "adr_prob": 0.5,
+  "buffer_length": 5,
+  "parameters":
+  {
+    "goal_range_min": {
+      "target_val": 0,
+      "inc": -0.125,
+      "pair": "goal_range_max"
+    },
+    "goal_range_max": {
+      "target_val": 4,
+      "inc": 0.125,
+      "pair": "goal_range_min"
+    }
+  }
+}

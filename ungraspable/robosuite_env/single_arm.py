@@ -19,6 +19,8 @@ from ungraspable.robosuite_env.osc import OSC
 
 class SingleArm(Manipulator):
     """
+    Modified based on robosuite.robots.single_arm
+
     Initializes a single-armed robot simulation object.
 
     Args:
@@ -55,6 +57,10 @@ class SingleArm(Manipulator):
         control_freq (float): how many control signals to receive
             in every second. This sets the amount of simulation time
             that passes between every action input.
+
+        control_gripper (bool): use gripper command in the action space or not. If false, keep the gripper open.
+
+        gripper_friction (tuple): gripper friction values
     """
 
     def __init__(
@@ -163,7 +169,6 @@ class SingleArm(Manipulator):
         else:
             # Load null gripper
             self.gripper = gripper_factory(None, idn=self.idn)
-
         # Grab eef rotation offset
         # self.eef_rot_offset = T.quat_multiply(self.robot_model.hand_rotation_offset, self.gripper.rotation_offset)
 
@@ -197,7 +202,6 @@ class SingleArm(Manipulator):
             deterministic (bool): If true, will not randomize initializations within the sim
         """
         # First, run the superclass method to reset the position and controller
-        # deterministic = True
         super().reset(deterministic)
 
         if not deterministic:

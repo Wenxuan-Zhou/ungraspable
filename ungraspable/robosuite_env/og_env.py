@@ -1,13 +1,15 @@
 import numpy as np
-from ungraspable.robosuite_env.base_env import BaseEnv
-from ungraspable.robosuite_env.grasp_samplers import GraspSampler
-from ungraspable.robosuite_env.utils import angle_diff, convert_to_batch, get_local_pose, get_global_pose, clean_xzplane_pose, clean_6d_pose
 from rlkit.torch.core import torch_ify
+
+from ungraspable.robosuite_env.base_env import BaseEnv
+from ungraspable.robosuite_env.gym_rotations import euler2quat, quat_mul
+from ungraspable.robosuite_env.utils import angle_diff, convert_to_batch, get_local_pose, get_global_pose, \
+    clean_xzplane_pose, clean_6d_pose
 
 
 class OccludedGraspingSimEnv(BaseEnv):
     """
-    Go to a desired grasp pose.
+    Defines the task-related properties of the simulation environment such as goals and rewards.
     """
 
     def __init__(
@@ -37,8 +39,6 @@ class OccludedGraspingSimEnv(BaseEnv):
         assert self.goal_range_min <= self.goal_range_max
         assert self.goal_range_min >= 0.
         assert self.goal_range_max <= 4.
-        self.goal_sampler = GraspSampler(self)
-        self.sample_goal = self.goal_sampler.sample_goal
 
         # Grasp selection parameters
         self.goal_selection = goal_selection
@@ -86,9 +86,9 @@ class OccludedGraspingSimEnv(BaseEnv):
         else:
             reduced_pose = clean_6d_pose
 
-        gripper_pose = reduced_pose(eef_pos_global, eef_quat_global, gripper_correction=False)
-        cube_pose = reduced_pose(cube_pos, cube_quat, gripper_correction=True)
-        local_gripper_pose = reduced_pose(obs['achieved_goal'][:3], obs['achieved_goal'][3:], gripper_correction=True)
+        gripper_pose = reduced_pose(eef_pos_global, eef_quat_global, offset=False)
+        cube_pose = reduced_pose(cube_pos, cube_quat, offset=True)
+        local_gripper_pose = reduced_pose(obs['achieved_goal'][:3], obs['achieved_goal'][3:], offset=True)
 
         obs['observation'] = np.concatenate([gripper_pose, cube_pose, local_gripper_pose])
 
@@ -109,6 +109,7 @@ class OccludedGraspingSimEnv(BaseEnv):
     """
     Reward
     """
+
     def _post_action(self, action):
         # Split reward and info
         reward, reward_info = self.reward(action)
@@ -134,8 +135,8 @@ class OccludedGraspingSimEnv(BaseEnv):
         desired_goal = convert_to_batch(obs_dict['desired_goal']).copy()
 
         # From gripper base in object frame to grip-site in local frame
-        site_pos, site_quat = self.get_site_pose(desired_goal[...,:3], desired_goal[...,3:])
-        site_pos_a, site_quat_a = self.get_site_pose(achieved_goal[...,:3], achieved_goal[...,3:])
+        site_pos, site_quat = self.get_site_pose(desired_goal[..., :3], desired_goal[..., 3:])
+        site_pos_a, site_quat_a = self.get_site_pose(achieved_goal[..., :3], achieved_goal[..., 3:])
         d_pos = np.linalg.norm(site_pos - site_pos_a, axis=-1)
         d_rot = angle_diff(site_quat, site_quat_a)
         pose_diff = -(self.alpha1 * d_pos + self.alpha2 * d_rot)
@@ -153,11 +154,11 @@ class OccludedGraspingSimEnv(BaseEnv):
         reward = pose_diff + gripper_penalty
 
         if verbose:
-            success = (gripper_penalty == 0).astype(np.float)\
-                      * (d_pos < 0.03).astype(np.float)\
-                      * (d_rot/np.pi*180 < 10).astype(np.float)
-            reward_info = {'pos_diff': d_pos*100,  # m to cm
-                           'rot_diff': d_rot/np.pi*180,  # Radian to degree
+            success = (gripper_penalty == 0).astype(np.float) \
+                      * (d_pos < 0.03).astype(np.float) \
+                      * (d_rot / np.pi * 180 < 10).astype(np.float)
+            reward_info = {'pos_diff': d_pos * 100,  # m to cm
+                           'rot_diff': d_rot / np.pi * 180,  # Radian to degree
                            'flip': (gripper_penalty == 0).astype(np.float),
                            'success': success,
                            'target_finger_penalty': gripper_penalty,
@@ -168,8 +169,10 @@ class OccludedGraspingSimEnv(BaseEnv):
 
     def get_site_pose(self, gripper_pos, gripper_quat):
         # Get global pose of the grip_site
-        local_pos = np.tile(self.sim.model.site_pos[self.sim.model.site_name2id('target:grip_site')], (gripper_pos.shape[0], 1))
-        local_quat = np.tile(self.sim.model.site_quat[self.sim.model.site_name2id('target:grip_site')], (gripper_pos.shape[0], 1))
+        local_pos = np.tile(self.sim.model.site_pos[self.sim.model.site_name2id('target:grip_site')],
+                            (gripper_pos.shape[0], 1))
+        local_quat = np.tile(self.sim.model.site_quat[self.sim.model.site_name2id('target:grip_site')],
+                             (gripper_pos.shape[0], 1))
         globel_pos, global_quat = get_global_pose(gripper_pos, gripper_quat, local_pos, local_quat)
         return globel_pos, global_quat
 
@@ -177,7 +180,7 @@ class OccludedGraspingSimEnv(BaseEnv):
         # Points on the gripper to decide if it is occluded or not
         sites = np.array([
             [-0.04, 0., 0.0524],
-            [0.04,  0., 0.0524],
+            [0.04, 0., 0.0524],
             [-0.04, 0., 0.097],
             [0.04, 0., 0.097],
             [0.09, 0., 0.],
@@ -196,7 +199,7 @@ class OccludedGraspingSimEnv(BaseEnv):
             penalty_list.append(penalty)
 
         penalty_arr = np.vstack(penalty_list)
-        total_penalty = np.mean(penalty_arr, axis=0)*self.beta
+        total_penalty = np.mean(penalty_arr, axis=0) * self.beta
         return total_penalty
 
     def grasp_and_lift(self, render, video_writer):
@@ -245,6 +248,73 @@ class OccludedGraspingSimEnv(BaseEnv):
     Target grasp related functions
     """
 
+    def sample_goal(self):
+        # Sample grasp location from the edges of a square and point to the center
+        # Returns position and quaternion of the grip_site in the cube coordinate
+        if self.goal_range == "left":
+            rand_num = np.random.uniform(0, 1)
+        elif self.goal_range == "front":
+            rand_num = np.random.uniform(1, 2)
+        elif self.goal_range == "right":
+            rand_num = np.random.uniform(2, 3)
+        elif self.goal_range == "back":
+            rand_num = np.random.uniform(3, 4)
+        elif self.goal_range == "all":
+            rand_num = np.random.rand() * 4
+        elif self.goal_range == "fixed":
+            rand_num = 1.5  # top middle grasp point by default
+        else:  # Use threshold
+            rand_num = np.random.uniform(self.goal_range_min, self.goal_range_max)
+
+        # Parameterize the grasp poses
+        # \\| | | | |// form 0 to 1
+        def param_to_pose(num):
+            p, a = 0, 0
+            if num < 0.25:  # Left corner
+                # convert range from [0, 0.25) to [-np.pi/4, 0)
+                p, a = -1, - np.pi * (num - 0.25)
+            elif 0.25 <= num < 0.75:  # On the edge
+                # convert range from [0.25, 0.75] to [-1, 1]
+                p, a = (num - 0.5) * 4, 0
+            elif 0.75 <= num < 1:  # Right corner
+                # convert range from [0.75, 1) to [0, np.pi/4)
+                p, a = 1, - np.pi * (num - 0.75)
+            return p, a
+
+        # Generate a random number from 0~4 representing four edges
+        rand_num = rand_num % 4
+        if rand_num < 1:  # Left
+            pp, aa = param_to_pose(rand_num)
+            pos_x, pos_y, angle = -pp, -1, np.pi / 2 + aa
+        elif rand_num < 2:  # Front
+            pp, aa = param_to_pose(rand_num - 1)
+            pos_x, pos_y, angle = -1, pp, aa
+        elif rand_num < 3:  # Right
+            pp, aa = param_to_pose(rand_num - 2)
+            pos_x, pos_y, angle = pp, 1, -np.pi / 2 + aa
+        else:  # Back
+            pp, aa = param_to_pose(rand_num - 3)
+            pos_x, pos_y, angle = 1, -pp, -np.pi + aa
+
+        # Calculate the position of the grasp based on the shape so that the grasp is on the edge
+        object_shape = self.cube.size
+        angle = angle  # + np.random.uniform(-30, 30)*np.pi/180
+        pos_x = pos_x * (object_shape[0] - 0.02)
+        pos_y = pos_y * (object_shape[1] - 0.02)
+        pos = np.array([pos_x, pos_y, 0])
+        rotation = np.array([0, 0, angle])  # Additional rotation along z axis in the object frame
+
+        # Default orientation of the grip_site wrt global coordinate
+        default_quat = euler2quat(np.array([0, np.pi / 2, 0]))
+        quat = quat_mul(euler2quat(rotation), default_quat)
+
+        # Convert grip_site pose to the base of the target gripper object for visualization
+        local_pos = np.array([0, 0, -0.097])
+        local_quat = np.array([1, 0, 0, 0])
+        pos, quat = get_global_pose(pos, quat, local_pos, local_quat)
+
+        return np.concatenate([pos, quat])
+
     def _pre_action(self, action, policy_step=False):
         # Update target gripper pose in this function so that it is updated for each simulation timestep rather than
         # each environment timestep.
@@ -279,6 +349,7 @@ class OccludedGraspingSimEnv(BaseEnv):
     """
     Grasp Selection
     """
+
     def set_models(self, qf, policy):
         self.qf = qf
         self.policy = policy
@@ -313,8 +384,8 @@ class OccludedGraspingSimEnv(BaseEnv):
         cube_quat = np.repeat(cube_quat.reshape(1, -1), self.num_goals, axis=0)
 
         # From gripper base in object frame to grip-site in local frame
-        site_pos, site_quat = self.get_site_pose(desired_goal[...,:3], desired_goal[...,3:])
-        site_pos_a, site_quat_a = self.get_site_pose(achieved_goal[...,:3], achieved_goal[...,3:])
+        site_pos, site_quat = self.get_site_pose(desired_goal[..., :3], desired_goal[..., 3:])
+        site_pos_a, site_quat_a = self.get_site_pose(achieved_goal[..., :3], achieved_goal[..., 3:])
         d_pos = np.linalg.norm(site_pos - site_pos_a, axis=-1)
         d_rot = angle_diff(site_quat, site_quat_a)
         pose_diff = -(50. * d_pos + 2. * d_rot)

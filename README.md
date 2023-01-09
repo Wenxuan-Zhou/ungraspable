@@ -1,12 +1,34 @@
-# Learning to Grasp the Ungraspable with Emergent Extrinsic Dexterity
+<div align="center">
 
-Code for "Learning to Grasp the Ungraspable with Emergent Extrinsic Dexterity".
-The code for the real robot experiments can be found here: https://github.com/Wenxuan-Zhou/frankapy_env.
+<font size=5>**Learning to Grasp the Ungraspable with Emergent Extrinsic Dexterity**</font>
 
-Build on top of https://github.com/ARISE-Initiative/robosuite-benchmark.
+[Wenxuan Zhou](https://wenxuan-zhou.github.io/), [David Held](https://davheld.github.io/)
 
-## Updates
-[01.01.2023] Initial commits.
+Robotics Institute, Carnegie Mellon University
+
+Conference on Robot Learning (CoRL) 2022 (Oral)
+
+[Paper](https://arxiv.org/abs/2211.01500)
+| [Website](https://sites.google.com/view/grasp-ungraspable)
+| [Real robot code](https://github.com/Wenxuan-Zhou/frankapy_env)
+
+<img src="https://lh4.googleusercontent.com/IoEtyaHzTduq-iEl_b2Mh8jTPOO8uMM-rE10IkXGSlL9z7aX89uxTb67-xZM7j5J6r3Vo-XcLObmdtJdYI7YE8n82pxuyH9NPcXwMBSkfDs_226q53tAbIdupeg81nOLVv-vGMtufxXrl6yKZKUsFg=w1280" height="100%">
+
+</div>
+
+In this paper, we build a system based on reinforcement learning that shows 
+emergent extrinsic dexterity behavior with a simple gripper 
+for the "Occluded Grasping" task. This repository contains the code for the
+**simulation environment** of the Occluded Grasping task and **RL
+training and rollouts**. The code for the **real robot rollouts** can be found in 
+[a separate repository](https://github.com/Wenxuan-Zhou/frankapy_env).
+
+This repository is built on top of [robosuite-benchmark](https://github.com/ARISE-Initiative/robosuite-benchmark). The simulation environment is based on [robosuite](https://robosuite.ai/) and the RL training related code 
+is based on [rlkit](https://github.com/rail-berkeley/rlkit). As an overview, [ungraspable/robosuite_env](ungraspable%2Frobosuite_env)
+defines the simulation environment ([additional notes](ungraspable/robosuite_env/README.md)). 
+[ungraspable/rlkit_utils](ungraspable/rlkit_utils) defines helper functions to be used with rlkit.
+
+Please feel free to contact us if you have any questions on the code or anything else related to our paper!
 
 ## Installation
 
@@ -28,9 +50,20 @@ Use [viskit](https://github.com/vitchyr/viskit) to visualize training log files.
 ## Usage
 ### Training
 ```bash
-python ungraspable/train.py
+python ungraspable/train.py --ExpID 0000
 ```
 The results will be saved under "./results" by default. During training, you can visualize current logged runs using [viskit](https://github.com/vitchyr/viskit).
+
+To train the policy with a multi-grasp curriculum:
+```bash
+python ungraspable/train.py --adr_mode 0001_ADR_MultiGrasp --ExpID 0001
+```
+
+To train the policy with Automatic Domain Randomization over physical parameters:
+```bash
+python ungraspable/train.py --adr_mode 0002_ADR_physics --ExpID 0002
+```
+
 
 ### Visualizing Rollouts
 To visualize a trained policy with onscreen mujoco renderer:
@@ -42,7 +75,7 @@ python ungraspable/rollout.py --load_dir results/examples/Exp0630_DexEnv_MultiGr
 If you find this repository useful, please cite our paper:
 ```
 @inproceedings{zhou2022ungraspable,
-  title={{Learning to Grasp the Ungraspable with Emergent Extrinsic Dexterity}},
+  title={Learning to Grasp the Ungraspable with Emergent Extrinsic Dexterity},
   author={Zhou, Wenxuan and Held, David},
   booktitle={Conference on Robot Learning (CoRL)},
   year={2022}

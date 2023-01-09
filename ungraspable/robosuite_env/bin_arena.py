@@ -1,11 +1,13 @@
 import numpy as np
+import os
 from robosuite.models.arenas import Arena
 from robosuite.utils.mjcf_utils import array_to_string
-import os
 
 
 class BinArena(Arena):
     """
+    Modified based on robosuite.models.arena.bins_arena
+
     Workspace that contains one bin. The table underneath the bin is just for visualization purpose.
 
     Args:
@@ -57,7 +59,7 @@ class BinArena(Arena):
         self.bin_body.set("pos", array_to_string(np.array([0, 0, self.bin_height])))
         # Bottom
         size = np.array([self.bin_half_size[0], self.bin_half_size[1], self.bin_thickness])
-        size += np.array([self.bin_thickness*2, self.bin_thickness*2, 0])  # To cover the edges
+        size += np.array([self.bin_thickness * 2, self.bin_thickness * 2, 0])  # To cover the edges
         pos = np.array([0, 0, -self.bin_thickness])
         self.bin_visuals["bottom"].set("size", array_to_string(size))
         self.bin_visuals["bottom"].set("pos", array_to_string(pos))
@@ -65,7 +67,7 @@ class BinArena(Arena):
         self.bin_collisions["bottom"].set("pos", array_to_string(pos))
         # Left
         size = np.array([self.bin_half_size[0], self.bin_thickness, self.bin_half_size[2]])
-        size += np.array([self.bin_thickness*2, 0, 0])  # To cover the edges
+        size += np.array([self.bin_thickness * 2, 0, 0])  # To cover the edges
         pos = np.array([0, -self.bin_half_size[1] - self.bin_thickness, self.bin_half_size[2]])
         if "L" in self.hidden_walls: pos = np.array([0, 0, -1])
         self.bin_visuals["left"].set("size", array_to_string(size))
@@ -74,7 +76,7 @@ class BinArena(Arena):
         self.bin_collisions["left"].set("pos", array_to_string(pos))
         # Right
         size = np.array([self.bin_half_size[0], self.bin_thickness, self.bin_half_size[2]])
-        size += np.array([self.bin_thickness*2, 0, 0])  # To cover the edges
+        size += np.array([self.bin_thickness * 2, 0, 0])  # To cover the edges
         pos = np.array([0, self.bin_half_size[1] + self.bin_thickness, self.bin_half_size[2]])
         if "R" in self.hidden_walls: pos = np.array([0, 0, -1])
         self.bin_visuals["right"].set("size", array_to_string(size))
@@ -83,7 +85,7 @@ class BinArena(Arena):
         self.bin_collisions["right"].set("pos", array_to_string(pos))
         # Front
         size = np.array([self.bin_thickness, self.bin_half_size[1], self.bin_half_size[2]])
-        size += np.array([0, self.bin_thickness*2, 0])  # To cover the edges
+        size += np.array([0, self.bin_thickness * 2, 0])  # To cover the edges
         pos = np.array([self.bin_half_size[0] + self.bin_thickness, 0, self.bin_half_size[2]])
         if "F" in self.hidden_walls: pos = np.array([0, 0, -1])
         self.bin_visuals["front"].set("size", array_to_string(size))
@@ -92,7 +94,7 @@ class BinArena(Arena):
         self.bin_collisions["front"].set("pos", array_to_string(pos))
         # Back
         size = np.array([self.bin_thickness, self.bin_half_size[1], self.bin_half_size[2]])
-        size += np.array([0, self.bin_thickness*2, 0])  # To cover the edges
+        size += np.array([0, self.bin_thickness * 2, 0])  # To cover the edges
         pos = np.array([-self.bin_half_size[0] - self.bin_thickness, 0, self.bin_half_size[2]])
         if "B" in self.hidden_walls: pos = np.array([0, 0, -1])
         self.bin_visuals["back"].set("size", array_to_string(size))
@@ -106,9 +108,9 @@ class BinArena(Arena):
             value.set("priority", str(1))
 
         # Set table locations
-        table_full_size = np.array([self.bin_full_size[0]+0.2, self.bin_full_size[1]+0.2, 0.05])
+        table_full_size = np.array([self.bin_full_size[0] + 0.2, self.bin_full_size[1] + 0.2, 0.05])
         table_offset = self.bin_height
-        table_offset -= self.bin_thickness*2
+        table_offset -= self.bin_thickness * 2
         table_half_size = table_full_size / 2
         center_pos = self.bottom_pos + np.array([0, 0, -table_half_size[2] + table_offset])
 
