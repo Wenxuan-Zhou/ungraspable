@@ -55,15 +55,23 @@ python ungraspable/train.py --ExpID 0000
 ```
 The results will be saved under "./results" by default. During training, you can visualize current logged runs using [viskit](https://github.com/vitchyr/viskit).
 
-To train the policy with a multi-grasp curriculum:
-```bash
-python ungraspable/train.py --adr_mode 0001_ADR_MultiGrasp --ExpID 0001
-```
+[//]: # (TO BE VERIFIED)
+[//]: # (To train the policy with a multi-grasp curriculum:)
 
-To train the policy with Automatic Domain Randomization over physical parameters:
-```bash
-python ungraspable/train.py --adr_mode 0002_ADR_physics --ExpID 0002
-```
+[//]: # (```bash)
+
+[//]: # (python ungraspable/train.py --adr_mode 0001_ADR_MultiGrasp --ExpID 0001)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (To train the policy with Automatic Domain Randomization over physical parameters:)
+
+[//]: # (```bash)
+
+[//]: # (python ungraspable/train.py --adr_mode 0002_ADR_physics --ExpID 0002)
+
+[//]: # (```)
 
 
 ### Visualizing Rollouts
