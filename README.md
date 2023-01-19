@@ -55,30 +55,27 @@ python ungraspable/train.py --ExpID 0000
 ```
 The results will be saved under "./results" by default. During training, you can visualize current logged runs using [viskit](https://github.com/vitchyr/viskit).
 
-[//]: # (TO BE VERIFIED)
-[//]: # (To train the policy with a multi-grasp curriculum:)
-
-[//]: # (```bash)
-
-[//]: # (python ungraspable/train.py --adr_mode 0001_ADR_MultiGrasp --ExpID 0001)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (To train the policy with Automatic Domain Randomization over physical parameters:)
-
-[//]: # (```bash)
-
-[//]: # (python ungraspable/train.py --adr_mode 0002_ADR_physics --ExpID 0002)
-
-[//]: # (```)
-
+To train the policy with a multi-grasp curriculum:
+```bash
+python ungraspable/train.py --adr_mode 0001_ADR_MultiGrasp --ExpID 0001 --goal_range use_threshold
+```
+"--adr_mode" specified an ADR configuration file under [ungraspable/rlkit_utils/adr_config](ungraspable%2Frlkit_utils%2Fadr_config).
+Similarly, to train the policy with Automatic Domain Randomization over physical parameters:
+```bash
+python ungraspable/train.py --adr_mode 0002_ADR_physics --ExpID 0002
+```
+We include the results of the above training commands in [result/examples](results%2Fexamples), including the model and the training logs.
+You may visualize the training curves of these examples using [viskit](https://github.com/vitchyr/viskit):
+```bash
+python your_viskit_folder/viskit/frontend.py ungraspable/results/examples
+```
 
 ### Visualizing Rollouts
 To visualize a trained policy with onscreen mujoco renderer:
 ```bash
-python ungraspable/rollout.py --load_dir results/examples/Exp0630_DexEnv_MultiGrasp-0 --camera sideview --grasp_and_lift
+python ungraspable/rollout.py --load_dir results/examples/Exp0000_OccludedGraspingSimEnv_tmp-0 --camera sideview --grasp_and_lift
 ```
+Feel free to try out other checkpoints in the [result/examples](results%2Fexamples) folder.
 
 ## Citation
 If you find this repository useful, please cite our paper:

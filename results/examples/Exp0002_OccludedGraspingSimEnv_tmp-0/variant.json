@@ -1,0 +1,66 @@
+{
+  "ExpGroup": "tmp",
+  "ExpID": 2,
+  "adr_mode": "0002_ADR_physics",
+  "algorithm": "HER-SAC",
+  "algorithm_kwargs": {
+    "batch_size": 256,
+    "max_path_length": 40,
+    "min_num_steps_before_training": 1000,
+    "num_epochs": 1000,
+    "num_eval_steps_per_epoch": 800,
+    "num_expl_steps_per_train_loop": 400,
+    "num_train_loops_per_epoch": 20,
+    "num_trains_per_train_loop": 1600
+  },
+  "environment_kwargs": {
+    "adaptive": false,
+    "alpha1": 50.0,
+    "alpha2": 2.0,
+    "beta": 200.0,
+    "control_freq": 2,
+    "controller": "OSC_CUSTOMIZED_6D",
+    "env_name": "OccludedGraspingSimEnv",
+    "goal_range": "fixed",
+    "goal_range_max": 1.5,
+    "goal_range_min": 1.5,
+    "horizon": 40,
+    "ignore_done": true,
+    "robots": "Panda"
+  },
+  "load_buffer": null,
+  "load_buffer_size": null,
+  "load_dir": null,
+  "policy_kwargs": {
+    "hidden_sizes": [
+      512,
+      512,
+      512
+    ]
+  },
+  "qf_kwargs": {
+    "hidden_sizes": [
+      512,
+      512,
+      512
+    ]
+  },
+  "replay_buffer_kwargs": {
+    "fraction_goals_env_goals": 0.0,
+    "fraction_goals_rollout_goals": 0.4,
+    "max_size": 1000000,
+    "save_buffer": false
+  },
+  "seed": 0,
+  "trainer_kwargs": {
+    "discount": 0.99,
+    "fixed_alpha": 1,
+    "policy_lr": 0.001,
+    "qf_lr": 0.0005,
+    "soft_target_tau": 0.005,
+    "target_entropy": null,
+    "target_update_period": 1,
+    "use_automatic_entropy_tuning": true
+  },
+  "version": "normal"
+}
