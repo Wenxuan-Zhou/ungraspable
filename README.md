@@ -35,8 +35,8 @@ Please feel free to contact us if you have any questions on the code or anything
 
 Clone the current repository:
 ```bash
-$ git clone --recursive https://github.com/Wenxuan-Zhou/dexterity.git
-$ cd dexterity
+$ git clone --recursive https://github.com/Wenxuan-Zhou/ungraspable.git
+$ cd ungraspable
 ```
 
 Create a conda environment with required packages.
